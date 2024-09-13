@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envio de Emails</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 5%;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"] {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 95%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .form-info {
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: #555;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            body{
+                padding: 25% 5%;
+            }
+            .form-container {
+                padding: 3%;
+            }
+
+            button {
+                font-size: 14px;
+            }
+
+            .form-info {
+                font-size: 10px;
+            }
+
+            footer {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Solicitar Envios de Email</h1>
+        <form action="/send-email" method="POST" enctype="multipart/form-data">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+
+            <label for="emails">Emails (separados por vírgula):</label>
+            <input type="text" id="emails" name="emails" placeholder="exemplo1@email.com, exemplo2@email.com" required>
+
+            <label for="arquivo-email">Anexar Arquivo:</label>
+            <input type="file" id="arquivo-email" name="arquivo-email" required>
+
+            <button type="submit">Enviar Email</button>
+        </form>
+        <div class="form-info">
+            <p>Por favor, insira os emails separados por vírgula.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 - Sistema de Envio Automático de Arquivos</p>
+        <p>Licenciado sob a <a href="LICENSE">Licença MIT</a>.</p>
+    </footer>
+</body>
+</html>
