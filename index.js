@@ -1,8 +1,12 @@
+// Importar módulos necessários
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+require('dotenv').config(); // Carregar variáveis de ambiente
+
 const app = express();
 
 // Configurar bodyParser para lidar com dados de formulários
@@ -28,24 +32,28 @@ app.get('/', (req, res) => {
 
 // Configurar o transporte de email
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // Pode usar outros serviços, como Outlook, Yahoo, etc.
+    service: 'gmail',
     auth: {
-        user: 'seuemail@gmail.com', // Seu email
-        pass: 'suasenha' // Sua senha do email (ou app password se tiver autenticação em dois fatores)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
 // Rota para enviar o email com o arquivo
 app.post('/send-email', upload.single('arquivo-email'), (req, res) => {
     const { nome, emails } = req.body;
+    if (!nome || !emails || !req.file) {
+        return res.status(400).send('Nome, e-mails e arquivo são obrigatórios.');
+    }
+
     const emailList = emails.split(',').map(email => email.trim()); // Transformar a string de e-mails em um array
 
     // Configurar os detalhes do email
     const mailOptions = {
-        from: 'seuemail@gmail.com',
+        from: process.env.EMAIL_USER, // Remetente
         to: emailList, // Lista de e-mails
         subject: `Arquivo de ${nome}`,
-        text: `Olá! Segue em anexo o Email de ${nome}.`,
+        text: `Olá! Segue em anexo o arquivo de ${nome}.`,
         attachments: [
             {
                 filename: req.file.filename, // Nome do arquivo anexado
@@ -57,10 +65,16 @@ app.post('/send-email', upload.single('arquivo-email'), (req, res) => {
     // Enviar o email
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log(error);
-            res.status(500).send('Erro ao enviar email.');
+            console.error('Erro ao enviar email:', error);
+            return res.status(500).send('Erro ao enviar email.');
         } else {
             console.log('Email enviado: ' + info.response);
+
+            // Limpar arquivos após envio
+            fs.unlink(path.join(__dirname, 'uploads', req.file.filename), (err) => {
+                if (err) console.error('Erro ao limpar arquivo:', err);
+            });
+
             res.status(200).send('Email enviado com sucesso!');
         }
     });
